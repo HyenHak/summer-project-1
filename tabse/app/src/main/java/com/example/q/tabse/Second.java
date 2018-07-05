@@ -3,7 +3,10 @@ package com.example.q.tabse;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,9 +38,14 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
+
+import static android.app.Activity.RESULT_OK;
 
 public class Second extends Fragment {
 
@@ -45,6 +53,12 @@ public class Second extends Fragment {
     LoadAlbum loadAlbumTask;
     GridView galleryGridView;
     ArrayList<HashMap<String, String>> albumList = new ArrayList<HashMap<String, String>>();
+    private Uri photoUri;
+    private String currentPhotoPath;//실제 사진 파일 경로
+    private String mImageCaptureName;//이미지 이름
+    private int flag = 0;
+    private final int CAMERA_CODE = 1234;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,12 +84,80 @@ public class Second extends Fragment {
             galleryGridView.setColumnWidth(Math.round(px));
         }
 
-        String[] PERMISSIONS = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+        String[] PERMISSIONS = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
         if(!Function.hasPermissions(getContext(), PERMISSIONS)){
             ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, REQUEST_PERMISSION_KEY);
         }
 
+        FloatingActionButton button = view.findViewById(R.id.floatingActionButton6);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (flag != 1) {
+                    selectPhoto();
+                }
+            }
+        });
+
         return view;
+    }
+
+    private void selectPhoto() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                File photoFile = null;
+                try {
+                    photoFile = createImageFile();
+                } catch (IOException ex) {
+
+                }
+                if (photoFile != null) {
+                    System.out.println(photoFile);
+                    photoUri = FileProvider.getUriForFile(getContext(), getActivity().getPackageName(), photoFile);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                    startActivityForResult(intent, CAMERA_CODE);
+                }
+            }
+
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        File dir = new File(Environment.getExternalStorageDirectory() + "/path/");
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        mImageCaptureName = timeStamp + ".png";
+
+        File storageDir = new File(Environment.getExternalStorageDirectory().getAbsoluteFile() + "/path/"
+                + mImageCaptureName);
+        currentPhotoPath = storageDir.getAbsolutePath();
+
+        return storageDir;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+
+            switch (requestCode) {
+                case CAMERA_CODE:
+                    File file = new File(currentPhotoPath);
+                    if(file.exists()) {
+                        file.delete();
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+        }
     }
 
     class LoadAlbum extends AsyncTask<String, Void, String> {
