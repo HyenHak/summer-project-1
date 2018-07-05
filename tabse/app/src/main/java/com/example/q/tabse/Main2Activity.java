@@ -97,13 +97,13 @@ public class Main2Activity extends AppCompatActivity {
         String title;
 
         switch(position){
-            case 0: title = "이름"; break;
-            case 1: title = "전화번호1"; break;
-            case 2: title = "전화번호2"; break;
-            case 3: title = "전화번호3"; break;
-            case 4: title = "성별"; break;
-            case 5: title = "이메일"; break;
-            case 6: title = "소속"; break;
+            case 0: title = "이름"; edittext.setInputType(0x00000001); break;
+            case 1: title = "전화번호1"; edittext.setInputType(0x00000003); break;
+            case 2: title = "전화번호2"; edittext.setInputType(0x00000003);break;
+            case 3: title = "전화번호3"; edittext.setInputType(0x00000003);break;
+            case 4: title = "성별"; edittext.setInputType(0x00000001); break;
+            case 5: title = "이메일"; edittext.setInputType(0x00000021); break;
+            case 6: title = "소속"; edittext.setInputType(0x00000001); break;
             default: title = "";
         }
 

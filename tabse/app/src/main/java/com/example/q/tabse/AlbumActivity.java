@@ -1,6 +1,7 @@
 package com.example.q.tabse;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -9,6 +10,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -114,6 +116,39 @@ public class AlbumActivity extends AppCompatActivity {
                     Intent intent = new Intent(AlbumActivity.this, GalleryPreview.class);
                     intent.putExtra("pos", position);
                     startActivity(intent);
+                }
+            });
+            galleryGridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int i, long l) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(galleryGridView.getContext());
+                    builder.setTitle("삭제")
+                            .setMessage("사진을 삭제하시겠습니까?")
+                            .setCancelable(false)
+                            .setPositiveButton("확인", new DialogInterface.OnClickListener(){
+                                public void onClick(DialogInterface dialog, int whichButton){
+                                    File file = new File(imageList.get(i).get("path"));
+                                    if(file.exists()){
+                                        file.delete();
+                                        imageList.remove(i);
+
+                                        Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                                        String selection = MediaStore.Images.Media.DATA + " = ?";
+                                        String[] selectionArgs = {file.getAbsolutePath()};
+                                        getContentResolver().delete(uri, selection, selectionArgs);
+
+                                        galleryGridView.setAdapter(galleryGridView.getAdapter());
+                                    }
+                                }
+                            })
+                            .setNegativeButton("취소", new DialogInterface.OnClickListener(){
+                                public void onClick(DialogInterface dialog, int whichButton){
+                                    dialog.cancel();
+                                }
+                            });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                    return true;
                 }
             });
         }
