@@ -9,7 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
-    private Fragment[] arrFragments = new Fragment[3];
+    private Fragment[] arrFragments = new Fragment[4];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
         arrFragments[0] = new First();
         arrFragments[1] = new Second();
         arrFragments[2] = new Third();
+        arrFragments[3] = new Fourth();
 
         MyPagerAdapter adapter = new MyPagerAdapter(getSupportFragmentManager(), arrFragments);
         viewPager.setAdapter(adapter);
@@ -58,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
                     return "갤러리";
                 case 2:
                     return "프로필";
+                case 3:
+                    return "계산기";
                 default:
                     return "";
             }
