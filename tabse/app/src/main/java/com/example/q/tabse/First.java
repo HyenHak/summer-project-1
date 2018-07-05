@@ -102,7 +102,7 @@ public class First extends Fragment {
             TextView textview = (TextView) convertView.findViewById(R.id.textView);
             textview.setText(person.name);
             TextView textview2 = (TextView) convertView.findViewById(R.id.textView2);
-            textview2.setText(person.phone.phone_number1);
+            textview2.setText(format.StringToPhone(person.phone.phone_number1));
 
             return convertView;
         }

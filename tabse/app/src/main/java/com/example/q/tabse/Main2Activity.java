@@ -190,8 +190,8 @@ public class Main2Activity extends AppCompatActivity {
             TextView textview = (TextView) convertView.findViewById(R.id.textView);
             textview.setText(it.c1);
             TextView textview2 = (TextView) convertView.findViewById(R.id.textView2);
-            textview2.setText(it.c2);
-
+            if(position >= 1 && position <=3) textview2.setText(format.StringToPhone(it.c2));
+            else textview2.setText(it.c2);
             return convertView;
         }
 

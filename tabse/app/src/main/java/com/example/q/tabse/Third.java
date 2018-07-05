@@ -147,7 +147,8 @@ public class Third extends Fragment {
             TextView textview = (TextView) convertView.findViewById(R.id.textView);
             textview.setText(item.name);
             TextView textview2 = (TextView) convertView.findViewById(R.id.textView2);
-            textview2.setText(item.element);
+            if((position >= 0 && position <= 2) && getCount()>=2) textview2.setText(format.StringToPhone(item.element));
+            else textview2.setText(item.element);
 
             return convertView;
         }
@@ -361,13 +362,13 @@ public class Third extends Fragment {
         String title;
 
         switch(position){
-            case 0: title = "이름"; break;
-            case 1: title = "성별"; break;
-            case 2: title = "전화번호1"; break;
-            case 3: title = "전화번호2"; break;
-            case 4: title = "전화번호3"; break;
-            case 5: title = "이메일"; break;
-            case 6: title = "소속"; break;
+            case 0: title = "이름"; edittext.setInputType(0x00000001); break;
+            case 1: title = "성별"; edittext.setInputType(0x00000001); break;
+            case 2: title = "전화번호1"; edittext.setInputType(0x00000003); break;
+            case 3: title = "전화번호2"; edittext.setInputType(0x00000003); break;
+            case 4: title = "전화번호3"; edittext.setInputType(0x00000003); break;
+            case 5: title = "이메일"; edittext.setInputType(0x00000021); break;
+            case 6: title = "소속"; edittext.setInputType(0x00000001); break;
             default: title ="";
         }
 
